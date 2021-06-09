@@ -9,7 +9,11 @@ import VueAxios from "vue-axios";
 Vue.use(BootstrapVue);
 Vue.use(VueAxios, axios);
 
-axios.defaults.baseURL = "http://localhost:3000/api";
+// URL para desarrollo local
+// axios.defaults.baseURL = "http://localhost:3000/api";
+
+// URL de producción
+axios.defaults.baseURL = "https://luasem-celn.herokuapp.com/api";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";

@@ -10,6 +10,24 @@
     >
       {{ mensaje.text }}
     </b-alert>
+    <form @submit.prevent="agregarNota()" v-if="agregar">
+      <h2 class="text-center">agregar nueva nota</h2>
+      <input
+        type="text"
+        placeholder="ingresa un nombre"
+        class="form-control my-2"
+        v-model="nota.nombre"
+      />
+      <input
+        type="text"
+        placeholder="ingresa la descripción"
+        class="form-control my-2"
+        v-model="nota.description"
+      />
+      <b-button type="submit" class="btn-sm btn-block btn-success"
+        >agregar</b-button
+      >
+    </form>
     <table class="table">
       <thead>
         <tr>
@@ -53,6 +71,8 @@ export default {
       mensaje: { color: "success", texto: "" },
       dismissSecs: 5,
       dismissCountDown: 0,
+      nota: {},
+      agregar: true,
     };
   },
   created() {
@@ -61,13 +81,32 @@ export default {
   methods: {
     listarNotas() {
       this.axios
-        .get("notas")
+        .get("/notas")
         .then((res) => {
           this.notas = res.data;
         })
         .catch((e) => {
           console.log("error" + e);
         });
+    },
+    agregarNota() {
+      this.axios
+        .post("/nota-nueva", this.nota)
+        .then((res) => {
+          this.notas.push(res.data);
+          this.nota.nombre = "";
+          this.nota.description = "";
+
+          this.mensaje.texto = "nota registrada";
+          this.mensaje.color = "success";
+          this.showAlert();
+        })
+        .catch((e) => {
+          this.mensaje.color = "danger";
+          this.mensaje.texto = e.response.data.error.errors.nombre.message;
+          this.showAlert();
+        });
+      this.notas = {};
     },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
